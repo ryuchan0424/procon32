@@ -166,26 +166,26 @@ def coord_next(x, y):
     # up
     if (y - 1 >= 0):
         coord_next_array.append([x, y - 1, 'U'])
-    # else:
-    #     coord_next_array.append([x, height - 1, 'U']) # 飛び越え
+    else:
+        coord_next_array.append([x, height - 1, 'U']) # 飛び越え
 
     # down
     if (y + 1 < height):
         coord_next_array.append([x, y + 1, 'D'])
-    # else:
-    #     coord_next_array.append([x, 0, 'D']) # 飛び越え
+    else:
+        coord_next_array.append([x, 0, 'D']) # 飛び越え
 
     # right
     if (x + 1 < width):
         coord_next_array.append([x + 1, y, 'R'])
-    # else:
-    #     coord_next_array.append([0, y, 'R']) # 飛び越え
+    else:
+        coord_next_array.append([0, y, 'R']) # 飛び越え
 
     # left
     if (x - 1 >= 0):
         coord_next_array.append([x - 1, y, 'L'])
-    # else:
-    #     coord_next_array.append([width - 1, y, 'L']) # 飛び越え
+    else:
+        coord_next_array.append([width - 1, y, 'L']) # 飛び越え
 
     return coord_next_array
 
