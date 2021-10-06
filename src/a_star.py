@@ -80,9 +80,9 @@ def search():
             new_distance = new_sboard.cost                                    # コストをnew_distanceに代入
 
             # 未訪問 or 訪問済みで現在のコストのほうが小さい時
-            if tuple(new_sboard._array) not in visited or new_distance < dist_dic[new_sboard]:
-                dist_dic[new_sboard] = new_distance            # 初期盤面からのコストを登録
-                visited[tuple(new_sboard._array)] = True       # 訪問済みリストに登録
+            if new_sboard.hashvalue not in visited or new_distance < dist_dic[new_sboard.hashvalue]:
+                dist_dic[new_sboard.hashvalue] = new_distance  # 初期盤面からのコストを登録
+                visited[new_sboard.hashvalue] = True           # 訪問済みリストに登録
                 new_sboard.parent = now_board                  # 親盤面を登録
                 new_sboard.move = coord[2]
                 heappush(queue, (new_sboard.cost, new_sboard)) # 待ち行列に登録
