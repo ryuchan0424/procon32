@@ -79,7 +79,7 @@ def search():
             new_sboard = Board(next_board, now_board.distance + 1, now_board) # 次の盤面
             new_distance = new_sboard.cost                                    # コストをnew_distanceに代入
 
-            # 未訪問
+            # 未訪問 or 訪問済みで現在のコストのほうが小さい時
             if tuple(new_sboard._array) not in visited or new_distance < dist_dic[new_sboard]:
                 dist_dic[new_sboard] = new_distance            # 初期盤面からのコストを登録
                 visited[tuple(new_sboard._array)] = True       # 訪問済みリストに登録
@@ -184,22 +184,22 @@ def main():
     HEURISTIC_MAGNIFICATION = 1.0  # heuristicに 1.9 をかけることで高速化
 
     # 3x3
-    width = 3
-    height = 3
+    # width = 3
+    # height = 3
 
-    start_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    goal_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    # start_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    # goal_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
 
     # 4x4
-    # width = 4
-    # height = 4
+    width = 4
+    height = 4
 
-    # start_board =  [3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12] # ボードの初期盤面 最短53手
+    start_board =  [3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12] # ボードの初期盤面 最短53手
     # start_board =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15] # ボードの初期盤面 right x3
     # start_board =  [1, 2, 3, 0, 5, 6, 7, 4, 9, 10, 11, 8, 13, 14, 15, 12] # ボードの初期盤面 down x3
     # start_board =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 0, 13] # ボードの初期盤面 left x3 (13選択時)
     # start_board =  [1, 2, 3, 8, 5, 6, 7, 12, 9, 10, 11, 0, 13, 14, 15, 4] # ボードの初期盤面 up x3 (4選択時)
-    # goal_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
+    goal_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
 
     timer_start = time.time()
     solution = search()
