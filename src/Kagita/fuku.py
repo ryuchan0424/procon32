@@ -244,7 +244,11 @@ isrot=True
 #手動でいじるところ######################################################################################
 sx=0
 sy=0
-#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？##################################################################################
+#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
+########負解像度　大きくなるほど粗くなる
+
+kaizou=4
+########################################################################################
 
 if not(isrot):
  for mm in range(index.shape[0]):
@@ -357,10 +361,6 @@ for terx in range(m):
        fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,p2,int(img.shape[1]/n)-1-p1].copy()
     cv2.imshow('fuck image'+str(terx)+"W"+str(tery), fuku_af)
 '''
-########負解像度　大きくなるほど粗くなる
-
-kaizou=4
-######
 
 
 ful=np.zeros((int(img.shape[0]/m/kaizou)*index.shape[0],int(img.shape[1]/n/kaizou)*index.shape[1],3), dtype='uint8')
