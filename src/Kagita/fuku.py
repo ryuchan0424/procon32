@@ -4,15 +4,21 @@ import random
 import sys
 
 
+args = sys.argv
 #手動でいじるところ######################################################################################
-sx=3
+sx=0
 sy=0
 #クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
 ########負解像度　大きくなるほど粗くなる
-kaitensuu=1
-kaizou=1
+kaitensuu=0
+kaizou=2
 bairitu=1
 ########################################################################################
+
+if 4<=len(args):
+ sx=int(args[1])
+ sy=int(args[2])
+ kaitensuu=int(args[3])
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
@@ -57,7 +63,7 @@ def rot(d,r):#多分左回転
   c1=c1-4
  return c1
 def get_fragment(q1,u,v,ran):#そのピースの指定した方向にran番会いそうなピースを返す
- kan=100
+ kan=150##計算のがんばり具合（大きいと遅くなるが、ちゃんと計算してくれる）
  distan=5
  sabo=1
  atu=2
@@ -112,7 +118,7 @@ start_x=-1
 start_y=-1
 used=[[False]*fragment.shape[1] for g in range(fragment.shape[0])]
 
-hani=2
+hani=1
 Edge_distanc_rank=np.zeros((m,n,4,hani,3), dtype='uint8')
 Edge_distanc_sums=np.zeros((m,n,4,hani))
 for g1 in range(m):
@@ -229,11 +235,8 @@ while len(yoyaku)>=1:
   if not(used[fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],0],fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],1]]>=1):
    u=fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],0]
    v=fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],1]
-   fl1=False
-   if fulset[i1][i2][2]==4:
-    fl1=True
-   if fl1:
-    yoyaku.append([0,0,0,0,0])
+   if fulset[i1][i2][2]==4 and fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],2]!=4:
+    yoyaku.append([0,0,0,0,4])
     yoyaku[-1][0]=u
     yoyaku[-1][1]=v
     
@@ -249,6 +252,8 @@ while len(yoyaku)>=1:
 
 index=np.full((m*bairitu,n*bairitu,3),np.array([0,0,4], dtype='uint8'))
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
+
+sy=-sy
 
 for mm in range(index.shape[0]):
  if mm+sy+1>=0 and len(fulset[0])>mm+sy+1:
@@ -295,8 +300,8 @@ while len(yoyaku)>=1:
     u=fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],0]
     v=fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],1]
     
-    if index[i1,i2,2]==4:
-     yoyaku.append([0,0,0,0,0])
+    if index[i1,i2,2]==4 and fragment[yoyaku[0][0],yoyaku[0][1],kai[o][0],kai[o][1],2]!=4:
+     yoyaku.append([0,0,0,0,4])
      yoyaku[-1][0]=u
      yoyaku[-1][1]=v
      
@@ -313,14 +318,13 @@ for hh1 in range(m):
   if index[hh1,hh2,2]==4:
    flg=False
    for ii1 in range(used.shape[0]):
-    for ii2 in range(used.shape[1]):
-     if used[ii1,ii2]<1:
-      used[ii1,ii2]=2
-      index[hh1,hh2]=fragment[ii1,ii2,1,1].copy()
-      flg=True
-      break
-    if flg:
-     break
+    if not(flg):
+     for ii2 in range(used.shape[1]):
+      if used[ii1,ii2]<1 and not(flg):
+       used[ii1,ii2]=2
+       index[hh1,hh2]=fragment[ii1,ii2,1,1].copy()
+       flg=True
+
 
 for tt1 in range(used.shape[0]):
  text=""
