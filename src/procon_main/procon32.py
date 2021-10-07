@@ -9,7 +9,10 @@ import requests
 URL = "https://procon32-practice.kosen.work"
 
 # 本番用
-# URL = ""
+# URL = "https://procon32-akita.kosen.work"
+
+# 本番用（予備）
+# URL = "https://procon32-sub.kosen.work"
 
 
 @click.group()
