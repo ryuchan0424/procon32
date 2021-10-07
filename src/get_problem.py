@@ -40,7 +40,7 @@ def XY_index(x, y):
         print('error')
         return 0
     
-    return index         # indexを返す
+    return index # indexを返す
 
 
 # 初期配列を取得
