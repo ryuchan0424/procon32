@@ -4,6 +4,7 @@ import random
 import sys
 
 
+args = sys.argv
 #手動でいじるところ######################################################################################
 sx=0
 sy=0
@@ -13,6 +14,11 @@ kaitensuu=0
 kaizou=2
 bairitu=1
 ########################################################################################
+
+if 4<=len(args):
+ sx=int(args[1])
+ sy=int(args[2])
+ kaitensuu=int(args[3])
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
@@ -246,6 +252,8 @@ while len(yoyaku)>=1:
 
 index=np.full((m*bairitu,n*bairitu,3),np.array([0,0,4], dtype='uint8'))
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
+
+sy=-sy
 
 for mm in range(index.shape[0]):
  if mm+sy+1>=0 and len(fulset[0])>mm+sy+1:
