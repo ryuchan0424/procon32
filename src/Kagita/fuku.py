@@ -2,6 +2,18 @@ import numpy as np
 import cv2
 import random
 import sys
+
+
+#手動でいじるところ######################################################################################
+sx=3
+sy=0
+#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
+########負解像度　大きくなるほど粗くなる
+kaitensuu=1
+kaizou=1
+bairitu=1
+########################################################################################
+
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
 
@@ -178,10 +190,8 @@ for g in range(m):
    start_x=g
    start_y=h
 
-#start_x=2
-#start_y=3
 fulset=[[np.zeros((3), dtype='uint8')]]#比べる用の変数の準備
-yoyaku=[[start_x,start_y,0,0,1]]##ここでも一応回転はいじれる
+yoyaku=[[start_x,start_y,0,0,kaitensuu]]##ここでも一応回転はいじれる
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
 used[start_x,start_y]=1
 
@@ -237,36 +247,17 @@ while len(yoyaku)>=1:
 
 
 
-index=np.full((m*2,n*2,3),np.array([0,0,4], dtype='uint8'))
+index=np.full((m*bairitu,n*bairitu,3),np.array([0,0,4], dtype='uint8'))
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
-isrot=True
 
-#手動でいじるところ######################################################################################
-sx=0
-sy=0
-#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
-########負解像度　大きくなるほど粗くなる
-
-kaizou=4
-########################################################################################
-
-if not(isrot):
- for mm in range(index.shape[0]):
-  if mm+sx+1>=0 and len(fulset)>mm+sx+1:
-   for mmm in range(index.shape[1]):
-    if mmm+sy+1>=0 and len(fulset[0])>mmm+sy+1:
-     index[mm,mmm]=fulset[(mm+sx+1)][(mmm+sy+1)].copy()
-     if index[mm,mmm,2]!=4:
-      used[index[mm,mmm,0],index[mm,mmm,1]]=2
-else:
- for mm in range(index.shape[0]):
-  if mm+sy+1>=0 and len(fulset[0])>mm+sy+1:
-   for mmm in range(index.shape[1]):
-    if len(fulset)-1-(mmm-sx+1)>=0 and len(fulset)>len(fulset)-1-(mmm-sx+1):
-     index[mm,mmm]=fulset[len(fulset)-1-(mmm-sx+1)][(mm+sy+1)].copy()
-     if index[mm,mmm,2]!=4:
-      index[mm,mmm,2]=rot(index[mm,mmm,2],1)
-      used[index[mm,mmm,0],index[mm,mmm,1]]=2
+for mm in range(index.shape[0]):
+ if mm+sy+1>=0 and len(fulset[0])>mm+sy+1:
+  for mmm in range(index.shape[1]):
+   if len(fulset)-1-(mmm-sx+1)>=0 and len(fulset)>len(fulset)-1-(mmm-sx+1):
+    index[mm,mmm]=fulset[len(fulset)-1-(mmm-sx+1)][(mm+sy+1)].copy()
+    if index[mm,mmm,2]!=4:
+     index[mm,mmm,2]=rot(index[mm,mmm,2],1)
+     used[index[mm,mmm,0],index[mm,mmm,1]]=2
 
 #ダメ押し
 yoyaku=[]
@@ -339,28 +330,6 @@ for tt1 in range(used.shape[0]):
   
 
 cv2.imshow('fuck image', img)
-'''
-fuku_af=np.zeros((int(img.shape[0]/m)*3,int(img.shape[1]/n)*3,3), dtype='uint8')
-for terx in range(m):
- for tery in range(n):
-
-  for nun1 in range(3):
-   for nun2 in range(3):
-    for p1 in range(int(img.shape[0]/m)):
-     for p2 in range(int(img.shape[1]/n)):
-      x=fragment[terx,tery,nun1,nun2,0]
-      y=fragment[terx,tery,nun1,nun2,1]
-      r=fragment[terx,tery,nun1,nun2,2]
-      if r==0:#回転なし
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,p1,p2].copy()
-      elif r==1:#右１周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,int(img.shape[0]/m)-1-p2,p1].copy()
-      elif r==2:#右２周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,int(img.shape[1]/n)-1-p1,int(img.shape[0]/m)-1-p2].copy()
-      elif r==3:#右３周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,p2,int(img.shape[1]/n)-1-p1].copy()
-    cv2.imshow('fuck image'+str(terx)+"W"+str(tery), fuku_af)
-'''
 
 
 ful=np.zeros((int(img.shape[0]/m/kaizou)*index.shape[0],int(img.shape[1]/n/kaizou)*index.shape[1],3), dtype='uint8')

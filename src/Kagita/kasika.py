@@ -3,6 +3,7 @@ import cv2
 import random
 import sys
 
+kaizou=2
 
 def rot(d,r):#回転計算関数
  c1=d+r
@@ -13,7 +14,7 @@ def rot(d,r):#回転計算関数
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
 
 file=open('problem.ppm', 'rb')
-memo=file.read()[0:64].decode(encoding='utf-8').split("\n")[1].split(" ")
+memo=file.read()[0:32].decode(encoding='utf-8').split("\n")[1].split(" ")
 print(memo)
 file.close()
 
@@ -43,22 +44,22 @@ for nun1 in range(n):
  for nun2 in range(m):
   im[nun1,nun2]=img[nun2*int(img.shape[0]/m):nun2*int(img.shape[0]/m)+int(img.shape[0]/m),nun1*int(img.shape[1]/n):nun1*int(img.shape[1]/n)+int(img.shape[1]/n)].copy()#画像の分割
 
-ful=np.zeros((int(img.shape[0]),int(img.shape[1]),3), dtype='uint8')
+ful=np.zeros((int(img.shape[0]/kaizou),int(img.shape[1]/kaizou),3), dtype='uint8')
 for nun1 in range(index.shape[0]):
  for nun2 in range(index.shape[1]):
-  for p1 in range(int(img.shape[1]/n)):
-   for p2 in range(int(img.shape[0]/m)):
+  for p1 in range(int(img.shape[1]/n/kaizou)):
+   for p2 in range(int(img.shape[0]/m/kaizou)):
     x=index[nun1,nun2,0]
     y=index[nun1,nun2,1]
     r=index[nun1,nun2,2]
     if r==0:#回転なし
-     ful[(nun2)*int(img.shape[1]/n)+p2,(nun1)*int(img.shape[0]/m)+p1]=im[x,y,p2,p1].copy()
+     ful[(nun2)*int(img.shape[1]/n/kaizou)+p2,(nun1)*int(img.shape[0]/m/kaizou)+p1]=im[x,y,p2*kaizou,p1*kaizou].copy()
     elif r==1:#右１周り
-     ful[(nun2)*int(img.shape[1]/n)+p2,(nun1)*int(img.shape[0]/m)+p1]=im[x,y,int(img.shape[1]/n)-1-p1,p2].copy()
+     ful[(nun2)*int(img.shape[1]/n/kaizou)+p2,(nun1)*int(img.shape[0]/m/kaizou)+p1]=im[x,y,int(img.shape[1]/n)-1-p1*kaizou,p2*kaizou].copy()
     elif r==2:#右２周り
-     ful[(nun2)*int(img.shape[1]/n)+p2,(nun1)*int(img.shape[0]/m)+p1]=im[x,y,int(img.shape[0]/m)-1-p2,int(img.shape[1]/n)-1-p1].copy()
+     ful[(nun2)*int(img.shape[1]/n/kaizou)+p2,(nun1)*int(img.shape[0]/m/kaizou)+p1]=im[x,y,int(img.shape[0]/m)-1-p2*kaizou,int(img.shape[1]/n)-1-p1*kaizou].copy()
     elif r==3:#右３周り
-     ful[(nun2)*int(img.shape[1]/n)+p2,(nun1)*int(img.shape[0]/m)+p1]=im[x,y,p1,int(img.shape[0]/m)-1-p2].copy()
+     ful[(nun2)*int(img.shape[1]/n/kaizou)+p2,(nun1)*int(img.shape[0]/m/kaizou)+p1]=im[x,y,p1*kaizou,int(img.shape[0]/m)-1-p2*kaizou].copy()
 cv2.imshow('fimage', ful)
 cv2.waitKey(0)
 
