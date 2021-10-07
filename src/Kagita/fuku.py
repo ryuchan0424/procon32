@@ -11,7 +11,7 @@ sy=0
 ########負解像度　大きくなるほど粗くなる
 kaitensuu=1
 kaizou=1
-bairitu=2
+bairitu=1
 ########################################################################################
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
@@ -330,28 +330,6 @@ for tt1 in range(used.shape[0]):
   
 
 cv2.imshow('fuck image', img)
-'''
-fuku_af=np.zeros((int(img.shape[0]/m)*3,int(img.shape[1]/n)*3,3), dtype='uint8')
-for terx in range(m):
- for tery in range(n):
-
-  for nun1 in range(3):
-   for nun2 in range(3):
-    for p1 in range(int(img.shape[0]/m)):
-     for p2 in range(int(img.shape[1]/n)):
-      x=fragment[terx,tery,nun1,nun2,0]
-      y=fragment[terx,tery,nun1,nun2,1]
-      r=fragment[terx,tery,nun1,nun2,2]
-      if r==0:#回転なし
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,p1,p2].copy()
-      elif r==1:#右１周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,int(img.shape[0]/m)-1-p2,p1].copy()
-      elif r==2:#右２周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,int(img.shape[1]/n)-1-p1,int(img.shape[0]/m)-1-p2].copy()
-      elif r==3:#右３周り
-       fuku_af[(nun1)*int(img.shape[0]/m)+p1,(nun2)*int(img.shape[1]/n)+p2]=im[x,y,p2,int(img.shape[1]/n)-1-p1].copy()
-    cv2.imshow('fuck image'+str(terx)+"W"+str(tery), fuku_af)
-'''
 
 
 ful=np.zeros((int(img.shape[0]/m/kaizou)*index.shape[0],int(img.shape[1]/n/kaizou)*index.shape[1],3), dtype='uint8')
