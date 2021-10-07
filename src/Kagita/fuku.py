@@ -9,8 +9,9 @@ sx=0
 sy=0
 #クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
 ########負解像度　大きくなるほど粗くなる
-kaitensuu=0
-kaizou=4
+kaitensuu=2
+kaizou=1
+bairitu=1
 ########################################################################################
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
@@ -248,7 +249,7 @@ while len(yoyaku)>=1:
 
 
 
-index=np.full((m*2,n*2,3),np.array([0,0,4], dtype='uint8'))
+index=np.full((m*bairitu,n*bairitu,3),np.array([0,0,4], dtype='uint8'))
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
 isrot=False
 
