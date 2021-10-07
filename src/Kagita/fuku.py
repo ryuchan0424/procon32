@@ -2,6 +2,17 @@ import numpy as np
 import cv2
 import random
 import sys
+
+
+#手動でいじるところ######################################################################################
+sx=0
+sy=0
+#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
+########負解像度　大きくなるほど粗くなる
+kaitensuu=0
+kaizou=4
+########################################################################################
+
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
 
@@ -181,7 +192,7 @@ for g in range(m):
 #start_x=2
 #start_y=3
 fulset=[[np.zeros((3), dtype='uint8')]]#比べる用の変数の準備
-yoyaku=[[start_x,start_y,0,0,1]]##ここでも一応回転はいじれる
+yoyaku=[[start_x,start_y,0,0,kaitensuu]]##ここでも一応回転はいじれる
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
 used[start_x,start_y]=1
 
@@ -239,16 +250,8 @@ while len(yoyaku)>=1:
 
 index=np.full((m*2,n*2,3),np.array([0,0,4], dtype='uint8'))
 used=np.full((fragment.shape[0], fragment.shape[1]), 0)
-isrot=True
+isrot=False
 
-#手動でいじるところ######################################################################################
-sx=0
-sy=0
-#クルッと回したあとにx方向にいくつ移動？y方向にいくつ移動？
-########負解像度　大きくなるほど粗くなる
-
-kaizou=4
-########################################################################################
 
 if not(isrot):
  for mm in range(index.shape[0]):
