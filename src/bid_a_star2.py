@@ -71,7 +71,6 @@ def search():
 
         now_tuple = heappop(queue) # 現在のタプル
         now_board = now_tuple[1]   # 現在の盤面
-        print(now_board._array)
 
         if now_board.node == CLOSE: continue #nodeがCLOSEの時はスキップ
 
