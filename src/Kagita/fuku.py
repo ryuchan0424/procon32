@@ -11,7 +11,7 @@ sy=0
 ########負解像度　大きくなるほど粗くなる
 kaitensuu=1
 kaizou=1
-bairitu=1
+bairitu=2
 ########################################################################################
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
