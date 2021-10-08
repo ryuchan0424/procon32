@@ -77,7 +77,7 @@ def search():
         No += 1 # 実行回数
 
         # ピースのない位置へ入ることのできる隣接座標
-        now_index = now_board._array.index(0) # 盤面配列の先頭の値
+        now_index = now_board._array.index(position) # 盤面配列の先頭の値
         x, y = XY_coord(now_index)            # 盤面配列の先頭の値をXY座標に変換
         coord_next_array = coord_next(x, y)   # 空の位置へ移動できる隣接マスの配列
 
@@ -99,11 +99,13 @@ def search():
                     if now_board.dir == toGOAL:
                         sol1 = get_solution(now_board)
                         sol2 = get_solution(visited_board)
+                        sol2 = reverse_direction(sol2)
                         sol1.reverse()
                     else:
                         sol1 = get_solution(visited_board)
                         sol1.reverse()
                         sol2 = get_solution(now_board)
+                        sol2 = reverse_direction(sol2)
 
                     sol = sol1 + sol2
 
@@ -118,6 +120,7 @@ def search():
 
             # 未訪問 or 訪問済みで現在のコストのほうが小さい時
             new_board = Board(next_board, now_board.distance+1, now_board, now_board.dir) # 次の盤面
+            new_board.move = coord[2]
             visited[key] = new_board # 訪問済みリストに登録
             heappush(queue, (new_board.cost, new_board)) # 待ち行列に登録
     
@@ -129,7 +132,11 @@ def get_solution(board):
     solution = []                   # solutionを作成
 
     while board is not None:
-        solution += [board._array]  # solution配列に追加
+        # solution += [{'array':[board._getsBoard()], 'd': str(board._getsMove()) } ]  # solution配列に追加
+        solution.append({
+            'array': board._getsBoard(),
+            'd': str(board._getsMove())
+        })
         board = board.parent        # boardに親盤面を代入
 
     return solution
@@ -249,6 +256,93 @@ def get_start_array():
     
     return out_array.tolist()
 
+
+# 盤面最後の移動方向を追加
+def get_last_direction(now, next):
+
+    # ゴール一つ前のの盤面
+    now_array = np.array(now['array'])
+    now_index = np.where(now_array == position)[0][0]
+    x, y = XY_coord(now_index)
+
+    # ゴール盤面
+    next_array = np.array(next['array'])
+    next_index = np.where(next_array == position)[0][0]
+    next_x, next_y = XY_coord(next_index)
+
+    # up
+    if (y - 1 >= 0):
+        if x == next_x and y - 1 == next_y: direction = 'U'
+    else:
+        if x == next_x and height - 1 == next_y: direction = 'U'
+
+    # down
+    if (y + 1 < height):
+        if x == next_x and y + 1 == next_y: direction = 'D'
+    else:
+        if x == next_x and 0 == next_y: direction = 'D'
+
+    # right
+    if (x + 1 < width):
+        if x + 1 == next_x and y == next_y: direction = 'R'
+    else:
+        if 0 == next_x and y == next_y: direction = 'R'
+
+    # left
+    if (x - 1 >= 0):
+        if x - 1 == next_x and y == next_y: direction = 'L'
+    else:
+        if width - 1 == next_x and y == next_y: direction = 'L'
+
+    next['d'] = direction
+
+
+# 解答の探索方向を逆転
+def reverse_direction(array):
+    dict = {
+        'U': 'D',
+        'D': 'U',
+        'R': 'L',
+        'L': 'R'
+    }
+
+    for i in range(len(array)):
+        if array[i]['d']: array[i]['d'] = dict[array[i]['d']]
+
+    return array
+
+
+# 移動
+def move(now_array, goal_number, confirm_array):
+    global start_board, goal_board, position
+
+    start_array = np.array(now_array)
+    goal_array = np.array(goal_board)
+    free_number = width * height + 1 # 自由に動かせるマスの番号
+
+    # 現在の盤面
+    index = np.where(start_array == goal_number)[0][0] # 指定したマスのindex
+    start_array = np.full(width * height, free_number) # マスをfree_numberで埋める
+    start_array[index] = goal_number # 指定したマスを元の値に戻す
+    
+    # ゴール盤面
+    index = np.where(goal_array == goal_number)[0][0] # 指定したマスのindex
+    goal_array = np.full(width * height, free_number) # マスをfree_numberで埋める
+    goal_array[index] = goal_number  # 指定したマスを元の値に戻す
+    position = goal_number
+
+    # グローバル変数に代入
+    start_board = start_array.tolist()
+    goal_board = goal_array.tolist()
+
+    # 探索
+    solution = search()
+
+    print('length: ', len(solution))
+    for i in range(len(solution)):
+        print(solution[i])
+
+
 # メイン関数
 def main():
     global start_board, goal_board
@@ -256,15 +350,39 @@ def main():
 
     HEURISTIC_MAGNIFICATION = 0.79
 
-    goal_board = get_goal_array()
-    start_board = get_start_array()
+    # goal_board = get_goal_array()
+    # start_board = get_start_array()
 
-    timer_start = time.time()
-    solution = search()
-    timer_end = time.time()
+    global width, height, position
 
-    print('time  : ', timer_end - timer_start)
-    print('length: ', len(solution), '\n', solution)
+    width = 4
+    height = 4
+    position = 0
+
+    start_board =  [3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12] # ボードの初期盤面 最短53手
+    # start_board =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15] # ボードの初期盤面 right x3
+    # start_board =  [1, 2, 3, 0, 5, 6, 7, 4, 9, 10, 11, 8, 13, 14, 15, 12] # ボードの初期盤面 down x3
+    # start_board =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 0, 13] # ボードの初期盤面 left x3 (13選択時)
+    # start_board =  [1, 2, 3, 8, 5, 6, 7, 12, 9, 10, 11, 0, 13, 14, 15, 4] # ボードの初期盤面 up x3 (4選択時)
+    goal_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
+
+    # print(goal_board)
+    # print(start_board)
+
+    move(start_board, 1, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+
+    # print(start_board)
+
+    # timer_start = time.time()
+    # solution = search()
+    # get_last_direction(solution[-2], solution[-1]) # 盤面最後の移動方向を追加
+    # timer_end = time.time()
+
+    # print('time  : ', timer_end - timer_start)
+    
+    # print('length: ', len(solution))
+    # for i in range(len(solution) - 1):
+    #     print(solution[i + 1])
 
 
 # 実行
