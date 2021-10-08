@@ -115,7 +115,7 @@ def search():
 
                     sol = sol1 + sol2
 
-                    print('counts: ', No)
+                    # print('counts: ', No)
 
                     get_first_direction(sol[0], sol[1]) # 盤面最後の移動方向を追加
                     get_last_direction(sol[-2], sol[-1]) # 盤面最後の移動方向を追加
@@ -531,15 +531,15 @@ def main():
     goal_board = get_goal_array()
     start_board = get_start_array()
 
-    # global width, height, position
+    global width, height, position
 
     position = 0
-    # width = 3
-    # height = 3
+    width = 3
+    height = 3
 
-    # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
-    # print('can_solve: ', can_solve())
+    goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    print('can_solve: ', can_solve())
     
     for i in range(width * height):
         if (can_solve()):
