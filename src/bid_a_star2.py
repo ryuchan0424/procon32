@@ -5,6 +5,7 @@
 from heapq import heappush, heappop
 from random import shuffle
 import numpy as np
+import random
 import time
 
 # グローバル変数
@@ -243,8 +244,9 @@ def XY_index(x, y):
 
 # ゴール配列を取得
 def get_goal_array():
-    global width, height
+    global width, height, rot
 
+    rot = np.array([], int)
     in_array = np.empty((0, 2), int) # 入力配列
     out_array = np.array([], int) # 出力配列
     filet = open('problem.txt', 'r',encoding = 'utf-8').read()
@@ -265,6 +267,7 @@ def get_goal_array():
 
             data = x_wari[i1].split(",")
             in_array = np.append(in_array, [[int(data[0]), int(data[1])]], axis = 0)
+            rot = np.append(rot, int(data[2]))
     
     for i in in_array: out_array = np.append(out_array, XY_index(i[0], i[1]))
 
@@ -525,8 +528,8 @@ def main():
 
     HEURISTIC_MAGNIFICATION = 0.79
 
-    # goal_board = get_goal_array()
-    # start_board = get_start_array()
+    goal_board = get_goal_array()
+    start_board = get_start_array()
 
     global width, height, position
 
@@ -609,6 +612,30 @@ def main():
         print(solution[i])
     print(array)
 
+    output_answer(solution)
+
+
+# ゴール配列を取得
+def output_answer(solution):
+    answer = ''
+
+    for i in rot: answer += str(i)
+
+    XY = XY_coord(start_board.index(position)) # 選択位置のXY座標
+
+    hex_X = str(hex(XY[0])).replace('0x','').upper()  # 10進数 -> 16進数
+    hex_Y = str(hex(XY[1])).replace('0x','').upper()  # 10進数 -> 16進数
+
+    answer += '\n1\n'                   # 選択回数
+    answer += hex_X + hex_Y + '\n'      # 選択画像位置
+    answer += str(len(solution)) + '\n' # 交換回数
+
+    for item in solution: answer += item['d']
+
+    print(answer)                    # answerを出力
+    file = open('solution.txt', 'w') # solution.txtを開く
+    file.write(answer)               # ファイルに書き込み
+    file.close()                     # ファイルを閉じる
 
 # 実行
 if __name__ == '__main__':
