@@ -98,16 +98,16 @@ def search():
                     
                     # ゴールを発見
                     if now_board.dir == toGOAL:
-                        print('OOOOOOOOOO')
+                        # print('OOOOOOOOOO')
                         sol1 = get_solution(now_board)
                         sol2 = get_solution(visited_board)
                         sol2 = reverse_direction(sol2)
                         sol1.reverse()
-                        print('xxx', sol1)
+                        # print('xxx', sol1)
                         # add_last_direction(sol1[-1], sol2[0], sol1)
-                        print('xxx',sol1)
+                        # print('xxx',sol1)
                     else:
-                        print('KKKKKKKKK')
+                        # print('KKKKKKKKK')
                         sol1 = get_solution(visited_board)
                         sol1.reverse()
                         sol2 = get_solution(now_board)
@@ -142,8 +142,7 @@ def search():
             # 未訪問 or 訪問済みで現在のコストのほうが小さい時
             new_board = Board(next_board, now_board.distance+1, now_board, now_board.dir) # 次の盤面
             new_board.move = coord[2]
-            if (new_board.move == 'D'):  print('AAA', new_board._array)
-            
+            # if (new_board.move == 'D'):  print('AAA', new_board._array)
             visited[key] = new_board # 訪問済みリストに登録
             heappush(queue, (new_board.cost, new_board)) # 待ち行列に登録
     
@@ -463,7 +462,7 @@ def move(now_array, goal_number, confirm_array):
     start_board = start_array.tolist()
     goal_board = goal_array.tolist()
 
-    print(start_board, goal_board)
+    # print(start_board, goal_board)
 
     # 探索
     solution = search()
@@ -489,10 +488,10 @@ def move(now_array, goal_number, confirm_array):
 def move_board(board_array, position, root):
     now_array = np.array(board_array)
     position = np.where(now_array == position)[0][0]
-    print('start: ', now_array)
+    # print('start: ', now_array)
 
     for direction in root:
-        print(direction)
+        # print(direction)
         x, y = XY_coord(position) # XY座標に変換
 
         # up
@@ -512,33 +511,45 @@ def move_board(board_array, position, root):
             index = XY_index(x - 1, y) if x - 1 >= 0 else XY_index(width - 1, y)
 
         now_array[position], now_array[index] = now_array[index], now_array[position] # マスを交換
-        print('',now_array)
+        # print('',now_array)
         position = index # 新しい位置を指定
         # print(now_array, direction)
 
-    print('goal: ', now_array)
+    # print('goal: ', now_array)
     return now_array
 
 
 # メイン関数
 def main():
-    global start_board, goal_board
+    global start_board, goal_board, position
     global HEURISTIC_MAGNIFICATION
     global all_result
 
-    HEURISTIC_MAGNIFICATION = 0.79
+    # HEURISTIC_MAGNIFICATION = 0.79
+    HEURISTIC_MAGNIFICATION = 10000
 
     goal_board = get_goal_array()
     start_board = get_start_array()
 
-    global width, height, position
+    # global width, height, position
 
-    position = 1
-    width = 3
-    height = 3
+    position = 0
+    # width = 3
+    # height = 3
 
-    goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    # print('can_solve: ', can_solve())
+    
+    for i in range(width * height):
+        if (can_solve()):
+            solution = search()
+            output_answer(solution)
+            break
+        else:
+            position += 1
+            continue
+
 
     # width = 4
     # height = 4
@@ -599,20 +610,21 @@ def main():
     # print(start_board)
 
     # timer_start = time.time()
-    solution = search()
+    # solution = search()
     # timer_end = time.time()
 
     # print('time  : ', timer_end - timer_start)
     
-    print('length: ', len(solution))
-    print(solution)
-    array = []
-    for i in range(len(solution)):
-        array.append(solution[i]['d'])
-        print(solution[i])
-    print(array)
+    # print('length: ', len(solution))
+    # print(solution)
 
-    output_answer(solution)
+    # array = []
+    # for i in range(len(solution)):
+    #     array.append(solution[i]['d'])
+    #     print(solution[i])
+    # print(array)
+
+    # output_answer(solution)
 
 
 # ゴール配列を取得
@@ -636,6 +648,42 @@ def output_answer(solution):
     file = open('solution.txt', 'w') # solution.txtを開く
     file.write(answer)               # ファイルに書き込み
     file.close()                     # ファイルを閉じる
+
+
+# 配列を作成
+def create_array(array):
+    out_array = np.array(array) # 出力配列
+    index = np.where(out_array == position)[0][0] # 0の位置
+    out_array = np.delete(out_array, index) # 指定したindexを削除
+    # print('pos', position)
+
+    return out_array
+
+
+# 交換回数をカウント
+def counter(start, goal):
+    counts = 0
+    start_array = np.array(start)
+    goal_array = np.array(goal)
+
+    for i in range(len(start_array)):
+        if start_array[i] != goal_array[i]:
+            index = np.where(start_array == goal_array[i])[0][0] # 位置
+            start_array[i], start_array[index] = start_array[index], start_array[i] # 交換
+            counts += 1 # カウントを1増やす
+
+    return counts
+
+
+# ゴール可能かどうか判定
+def can_solve():
+    start = create_array(start_board)
+    goal = create_array(goal_board)
+    counts = counter(start, goal)
+
+    # print('can_solve: ', counts) # ログ出力
+    return counts % 2 == 0
+
 
 # 実行
 if __name__ == '__main__':
