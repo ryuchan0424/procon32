@@ -531,14 +531,15 @@ def main():
     goal_board = get_goal_array()
     start_board = get_start_array()
 
-    global width, height, position
+    # global width, height, position
+    global position
 
     position = 0
-    width = 3
-    height = 3
+    # width = 3
+    # height = 3
 
-    goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
     print('can_solve: ', can_solve())
     
     for i in range(width * height):
