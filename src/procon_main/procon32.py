@@ -26,7 +26,7 @@ def cli() -> None:
 @click.option("--wait", type=bool, default=False, help="問題が有効になるまで繰り返し取得します")
 @click.option("--interval", type=int, default=5, help="--wait が指定されている場合の問題の取得間隔(秒)")
 @click.option(
-    "-o", type=click.File(mode="wb"), default="problem.ppm", help="取得した問題の出力先"
+    "-o", type=click.File(mode="wb"), default="procon_main/problem.ppm", help="取得した問題の出力先"
 )
 def download(url: str, token: str, wait: bool, interval: int, o: io.BytesIO) -> None:
     endpoint = urllib.parse.urljoin(url, "problem.ppm")
