@@ -95,35 +95,43 @@ def search():
                 visited_board = visited[key]
 
                 if now_board.dir != visited_board.dir: # 両者の探索方向を確認
-                    print('nv: ', next_board, visited_board._array)
+                    # print('nv: ', next_board, visited_board._array)
                     # ゴールを発見
                     if now_board.dir == toGOAL:
-                        # print('OOOOOOOOOO')
+                        print('aaa')
                         sol1 = get_solution(now_board)
                         sol2 = get_solution(visited_board)
                         sol2 = reverse_direction(sol2)
                         sol1.reverse()
-                        # print('xxx', sol1)
+                        # sol1.append(get_middle_direction(sol1[-1], sol2[0])) ここ修正必要
                         # add_last_direction(sol1[-1], sol2[0], sol1)
                         # print('xxx',sol1)
+                        # index = sol1[-1]['array'].index(position)
+                        # x, y = XY_coord(index)
+                        # array1 = coord_next(x, y)
+                        # di = get_middle_direction(sol1[-1], sol2[0])
+                        # print(sol1[-1], sol2[0])
+
+                        # for i in array1:
+                        #     if i[2] == di:
+                        #         next_index = XY_index(i[0], i[1])
                     else:
-                        # print('KKKKKKKKK')
                         sol1 = get_solution(visited_board)
-                        # sol1.reverse()
+                        sol1.reverse()
                         sol2 = get_solution(now_board)
                         sol2 = reverse_direction(sol2)
-
+                        # sol1.append(get_middle_direction(sol1[-1], sol2[0]))
                         
-                        for item in sol1:
-                            print(item)
-                        print('============')
-                        for item in sol2:
-                                print(item)
+                    # for item in sol1:
+                    #     print(item)
+                    # print('============')
+                    # for item in sol2:
+                    #         print(item)
 
                     sol = sol1 + sol2
 
                     # print('counts: ', No)
-
+                    
                     get_first_direction(sol[0], sol[1]) # 盤面最後の移動方向を追加
                     get_last_direction(sol[-2], sol[-1]) # 盤面最後の移動方向を追加
 
@@ -369,6 +377,46 @@ def get_last_direction(now, next):
 
 
 # 盤面最後の移動方向を追加
+def get_middle_direction(now, next):
+
+    # ゴール一つ前のの盤面
+    now_array = np.array(now['array'])
+    now_index = np.where(now_array == position)[0][0]
+    x, y = XY_coord(now_index)
+
+    # ゴール盤面
+    next_array = np.array(next['array'])
+    next_index = np.where(next_array == position)[0][0]
+    next_x, next_y = XY_coord(next_index)
+
+    # up
+    if (y - 1 >= 0):
+        if x == next_x and y - 1 == next_y: direction = 'U'
+    else:
+        if x == next_x and height - 1 == next_y: direction = 'U'
+
+    # down
+    if (y + 1 < height):
+        if x == next_x and y + 1 == next_y: direction = 'D'
+    else:
+        if x == next_x and 0 == next_y: direction = 'D'
+
+    # right
+    if (x + 1 < width):
+        if x + 1 == next_x and y == next_y: direction = 'R'
+    else:
+        if 0 == next_x and y == next_y: direction = 'R'
+
+    # left
+    if (x - 1 >= 0):
+        if x - 1 == next_x and y == next_y: direction = 'L'
+    else:
+        if width - 1 == next_x and y == next_y: direction = 'L'
+
+    return direction
+
+
+# 盤面最後の移動方向を追加
 def add_last_direction(now, next, out):
 
     # ゴール一つ前のの盤面
@@ -427,6 +475,7 @@ def reverse_direction(array):
 # 移動
 def move(now_array, goal_number, confirm_array):
     global start_board, goal_board, position
+    global all_result
 
     select = 0
     pp = False
@@ -447,8 +496,10 @@ def move(now_array, goal_number, confirm_array):
 
     # 固定するマス
     for i in range(len(confirm_array)):
-        index = now_array.index(confirm_array[i])
+        # index = now_array.index(confirm_array[i])
+        index = np.where(now_array == confirm_array[i])
         start_array[index] = confirm_array[i] # 指定したマスを元の値に戻す
+        # print(start_array[index])
 
     # ゴール盤面
     next_start_index = np.where(goal_array == select)[0][0] # 指定したマスのindex
@@ -467,7 +518,7 @@ def move(now_array, goal_number, confirm_array):
     goal_board = goal_array.tolist()
 
     # 探索
-    print(position, start_board, goal_board)
+    # print(position, start_board, goal_board)
     solution = search()
 
     # もとに戻す
@@ -477,8 +528,10 @@ def move(now_array, goal_number, confirm_array):
     array = []
     for i in range(len(solution) - 1):
         array.append(solution[i + 1]['d'])
-        print(solution[i + 1]['array'], solution[i + 1]['d']) #デバッグ
+        all_result.append(solution[i + 1]['d'])
+        # print(solution[i + 1]['array'], solution[i + 1]['d']) #デバッグ
 
+    
     return array
 
 
@@ -508,7 +561,7 @@ def move_board(board_array, position, root):
 
         now_array[position], now_array[index] = now_array[index], now_array[position] # マスを交換
         position = index # 新しい位置を指定
-        print(now_array, direction) # デバッグ
+        # print(now_array, direction) # デバッグ
 
     return now_array
 
@@ -518,6 +571,8 @@ def main():
     global start_board, goal_board, position
     global HEURISTIC_MAGNIFICATION
     global all_result
+
+    all_result = []
 
     # HEURISTIC_MAGNIFICATION = 0.79
     HEURISTIC_MAGNIFICATION = 10000
@@ -561,9 +616,17 @@ def main():
     # board = move_board(start_board, position, root)
     # print('board: ',root, board)
 
-    root = move(board, 1, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    board = move_board(board, position, root)
-    print('board: ',root, board)
+    # root = move(board, 1, [0,2]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    # board = move_board(board, position, root)
+    # print('board: ',root, board)
+
+    ok_array = []
+    for i in range(len(start_board) - 1):
+        root = move(board, i + 1, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+        board = move_board(board, position, root)
+        # print('board: ',root, board)
+        print(all_result)
+        ok_array.append(i + 1)
 
     # root = move(board, 2, [1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
@@ -617,7 +680,7 @@ def main():
     #     print(solution[i])
     # print(array)
 
-    # output_answer(solution)
+    output_answer(all_result)
 
 
 # ゴール配列を取得
@@ -635,7 +698,7 @@ def output_answer(solution):
     answer += hex_X + hex_Y + '\n'      # 選択画像位置
     answer += str(len(solution)) + '\n' # 交換回数
 
-    for item in solution: answer += item['d']
+    for item in solution: answer += item
 
     print(answer)                    # answerを出力
     file = open('procon_main/solution.txt', 'w') # solution.txtを開く
