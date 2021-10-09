@@ -580,26 +580,16 @@ def main():
     goal_board = get_goal_array()
     start_board = get_start_array()
 
-    # global width, height, position
-    global position
+    global position # 本番用
+    position = 0 # 本番用
 
-    position = 0
+    # デバッグ用
+    # global width, height, position
+
     # width = 3
     # height = 3
-
     # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
     # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
-    print('can_solve: ', can_solve())
-    
-    # for i in range(width * height):
-    #     if (can_solve()):
-    #         solution = search()
-    #         output_answer(solution)
-    #         break
-    #     else:
-    #         position += 1
-    #         continue
-
 
     # width = 4
     # height = 4
@@ -611,7 +601,27 @@ def main():
     # start_board =  [1, 2, 3, 8, 5, 6, 7, 12, 9, 10, 11, 0, 13, 14, 15, 4] # ボードの初期盤面 up x3 (4選択時)
     # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
 
+    print('can_solve: ', can_solve())
+
+    ok_array = []
     board = start_board
+    for i in range(len(start_board) - 1):
+        root = move(board, i + 1, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+        board = move_board(board, position, root)
+        ok_array.append(i + 1)
+        # print('board: ',root, board)
+        # print(all_result)
+    
+    # デバッグ用
+    # for i in range(width * height):
+    #     if (can_solve()):
+    #         solution = search()
+    #         output_answer(solution)
+    #         break
+    #     else:
+    #         position += 1
+    #         continue
+        
     # root = move(board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(start_board, position, root)
     # print('board: ',root, board)
@@ -619,14 +629,6 @@ def main():
     # root = move(board, 1, [0,2]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
     # print('board: ',root, board)
-
-    ok_array = []
-    for i in range(len(start_board) - 1):
-        root = move(board, i + 1, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-        board = move_board(board, position, root)
-        # print('board: ',root, board)
-        # print(all_result)
-        ok_array.append(i + 1)
 
     # root = move(board, 2, [1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
@@ -657,12 +659,6 @@ def main():
     # board = move_board(board, position, root)
     # print('board',root, board)
 
-    # ok_array = []
-    # for i in start_board:
-    #     print('a ', i)
-    #     ok_array.append(i)
-    #     print(ok_array)
-
     # print(start_board)
 
     # timer_start = time.time()
@@ -680,7 +676,7 @@ def main():
     #     print(solution[i])
     # print(array)
 
-    output_answer(all_result)
+    output_answer(all_result) # 解を出力
 
 
 # ゴール配列を取得
