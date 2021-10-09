@@ -98,7 +98,7 @@ def search():
                     # print('nv: ', next_board, visited_board._array)
                     # ゴールを発見
                     if now_board.dir == toGOAL:
-                        print('aaa')
+                        # print('aaa')
                         sol1 = get_solution(now_board)
                         sol2 = get_solution(visited_board)
                         sol2 = reverse_direction(sol2)
@@ -580,15 +580,15 @@ def main():
     goal_board = get_goal_array()
     start_board = get_start_array()
 
-    global width, height, position
-    # global position
+    # global width, height, position
+    global position
 
     position = 0
-    width = 3
-    height = 3
+    # width = 3
+    # height = 3
 
-    goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
     print('can_solve: ', can_solve())
     
     # for i in range(width * height):
@@ -625,7 +625,7 @@ def main():
         root = move(board, i + 1, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
         board = move_board(board, position, root)
         # print('board: ',root, board)
-        print(all_result)
+        # print(all_result)
         ok_array.append(i + 1)
 
     # root = move(board, 2, [1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
