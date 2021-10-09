@@ -248,7 +248,7 @@ def get_goal_array():
     rot = np.array([], int)
     in_array = np.empty((0, 2), int) # 入力配列
     out_array = np.array([], int) # 出力配列
-    filet = open('problem.txt', 'r',encoding = 'utf-8').read()
+    filet = open('Kagita/problem.txt', 'r',encoding = 'utf-8').read()
 
     y_wari = filet.split("\n")
     x_wari = y_wari[0].split("\t")
