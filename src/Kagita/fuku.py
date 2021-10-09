@@ -356,7 +356,7 @@ cv2.imshow('fimage', ful)
 
 cv2.waitKey(0)
 
-savefile=open('problem.txt', 'w', encoding='UTF-8')
+savefile=open('Kagita/problem.txt', 'w', encoding='UTF-8')
 text=""
 
 for i1 in range(index.shape[0]):
