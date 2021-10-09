@@ -643,7 +643,7 @@ def output_answer(solution):
     for item in solution: answer += item['d']
 
     print(answer)                    # answerを出力
-    file = open('solution.txt', 'w') # solution.txtを開く
+    file = open('procon_main/solution.txt', 'w') # solution.txtを開く
     file.write(answer)               # ファイルに書き込み
     file.close()                     # ファイルを閉じる
 
