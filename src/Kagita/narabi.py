@@ -147,7 +147,124 @@ def toku(index,cansame,text):
  print(text)
  return index,text
 
+filet=open('problem.txt', 'r',encoding='utf-8').read()
+
+y_wari=filet.split("\n")
+x_wari=y_wari[0].split("\t")
+data=x_wari[0].split(",")
+
+index=np.zeros((len(x_wari),len(y_wari),len(data)), dtype='uint8')
+
+y_wari=filet.split("\n")
+for i2 in range(len(y_wari)):
+ x_wari=y_wari[i2].split("\t")
+ for i1 in range(len(x_wari)):
+  data=x_wari[i1].split(",")
+  for i3 in range(len(data)):
+   index[i1,i2,i3]=int(data[i3])
+
+
 text=""
+
+ox=0
+oy=0
+for i1 in range(index.shape[0]):
+ for i2 in range(index.shape[1]):
+  if index[i1,i2,0]==index.shape[0]-2 and index[i1,i2,1]==index.shape[1]-2:
+   ox=i1
+   oy=i2
+   break
+tas=[[1,1],[0,2],[0,1],[0,0],[1,0],[2,0],[2,1],[2,2],[1,2]]
+for t2 in range(index.shape[1]):
+ for t1 in range(index.shape[0]):
+  terx=0
+  tery=0
+  for i1 in range(index.shape[0]):
+   for i2 in range(index.shape[1]):
+    if index[t1,t2,0]==i1 and index[t1,t2,1]==i2:
+     terx=i1
+     tery=i2
+     break
+  x_3_3=ox
+  y_3_3=oy
+  while not(terx-1<=ox and ox<=terx+1 and tery-1<=oy and oy<=tery+1):
+   w1=0
+   if ox>terx:
+    w1=-1
+   elif ox<terx:
+    w1=1
+   x_3_3=ox+w1
+   w2=0
+   if oy>tery:
+    w2=-1
+   elif ox<terx:
+    w2=1
+   y_3_3=oy+w2
+   ide=np.array([[3,4,5],[2,0,6],[1,8,7]])
+   memo=ide[1,1]
+   ide[1,1]=ide[1+w1,1+w2]
+   ide[1+w1,1+w2]=memo
+   can=[False,True,True,True,True,True,True,True,True]
+   ide,text=toku(ide,can,text)
+   for j1 in range(3):
+    for j2 in range(3):
+     memo=index[j1+ox-1+j1-2,j2+oy-1+j2-1].copy()
+     index[j1+ox-1+j1-2,j2+oy-1+j2-1]=index[j1+ox-1+tas[ide[j1,j2][0]]-2,j2+oy-1+tas[ide[j1,j2][1]]-1].copy()
+     index[j1+ox-1+tas[ide[j1,j2][0]]-2,j2+oy-1+tas[ide[j1,j2][1]]-1]=memo.copy()
+   ox=x_3_3
+   oy=y_3_3
+  
+  while not(t1==terx and t2==tery):
+   u1=0 #o
+   w1=0 #ter
+   if (t1-terx)*(t1-terx)>(t1-ox)*(t1-ox):
+    x_3_3=ox
+    w1=terx-ox
+   else:
+    x_3_3=terx
+    u1=ox-terx
+      
+   u2=0 #o
+   w2=0 #ter
+   if (t2-tery)*(t2-tery)>(t2-oy)*(t2-oy):
+    y_3_3=oy
+    w2=tery-oy
+   else:
+    y_3_3=tery
+    u2=oy-tery
+   
+   
+   ide=np.array([[3,4,5],[2,0,6],[1,8,7]])
+   memo=ide[1,1]
+   ide[1,1]=ide[1+w1,1+w2]
+   ide[1+w1,1+w2]=memo
+   if ide[1,1]==1:
+    memo=ide[1,1]
+    ide[1,1]=ide[1+u1,1+u2]
+    ide[1+u1,1+u2]=memo
+   else:
+    memo=ide[2,0]
+    ide[2,0]=ide[1+u1,1+u2]
+    ide[1+u1,1+u2]=memo
+   
+   can=[False,True,True,True,True,True,True,True,True]
+   ide,text=toku(ide,can,text)
+   for j1 in range(3):##ここまで
+    for j2 in range(3):
+     memo=index[j1+ox-1+j1-2,j2+oy-1+j2-1].copy()
+     index[j1+ox-1+j1-2,j2+oy-1+j2-1]=index[j1+ox-1+tas[ide[j1,j2][0]]-2,j2+oy-1+tas[ide[j1,j2][1]]-1].copy()
+     index[j1+ox-1+tas[ide[j1,j2][0]]-2,j2+oy-1+tas[ide[j1,j2][1]]-1]=memo.copy()
+   ox=x_3_3
+   oy=y_3_3
+
+
 index=np.array([[1,2,3],[4,5,6],[0,7,8]])
 can=[False,False,True,False,False,False,False,True,True]
-toku(index,can,text)
+index,text=toku(index,can,text)
+
+
+
+
+
+print(text)
+print(len(text))
