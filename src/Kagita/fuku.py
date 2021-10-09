@@ -268,7 +268,7 @@ for mm in range(index.shape[0]):
 yoyaku=[]
 for ii in range(m):
  for jj in range(n):
-  if 1<=used[index[ii,jj,0],index[ii,jj,1]]:
+  if 1<=used[index[ii,jj,0],index[ii,jj,1]] and index[ii,jj,2]<4:
    if ii+1<m:
     if index[ii+1,jj,2]==4:
      yoyaku.append([index[ii,jj,0],index[ii,jj,1],ii,jj,rot(index[ii,jj,2],1)])
