@@ -93,9 +93,9 @@ def search():
             if key in visited:
                 
                 visited_board = visited[key]
-                
+
                 if now_board.dir != visited_board.dir: # 両者の探索方向を確認
-                    
+                    print('nv: ', next_board, visited_board._array)
                     # ゴールを発見
                     if now_board.dir == toGOAL:
                         # print('OOOOOOOOOO')
@@ -109,9 +109,16 @@ def search():
                     else:
                         # print('KKKKKKKKK')
                         sol1 = get_solution(visited_board)
-                        sol1.reverse()
+                        # sol1.reverse()
                         sol2 = get_solution(now_board)
                         sol2 = reverse_direction(sol2)
+
+                        
+                        for item in sol1:
+                            print(item)
+                        print('============')
+                        for item in sol2:
+                                print(item)
 
                     sol = sol1 + sol2
 
@@ -421,6 +428,7 @@ def reverse_direction(array):
 def move(now_array, goal_number, confirm_array):
     global start_board, goal_board, position
 
+    select = 0
     pp = False
     if goal_number == 7: pp = True
 
@@ -430,63 +438,46 @@ def move(now_array, goal_number, confirm_array):
     r_goal_array = np.array(goal_board)
     free_number = width * height + 1 # 自由に動かせるマスの番号
 
-    confirm_array_index = np.array([], int)
-    for i in confirm_array:
-        index = np.where(start_array == i)[0][0] # 指定したマスのindex
-        confirm_array_index = np.append(confirm_array_index, index)
-
     # 現在の盤面
-    index = np.where(start_array == goal_number)[0][0] # 指定したマスのindex
-    print('a1: ', index)
+    now_start_index = np.where(start_array == select)[0][0] # 指定したマスのindex
+    now_goal_index = np.where(start_array == goal_number)[0][0] # 指定したマスのindex
     start_array = np.full(width * height, free_number) # マスをfree_numberで埋める
-    start_array[index] = goal_number # 指定したマスを元の値に戻す
+    start_array[now_start_index] = select # 指定したマスを元の値に戻す
+    start_array[now_goal_index] = goal_number # 指定したマスを元の値に戻す
 
-    confirm_array_index2 = np.array([], int)
+    # 固定するマス
     for i in range(len(confirm_array)):
-        index2 = confirm_array_index[i]
-        start_array[index2] = confirm_array[i]
-
-        index = np.where(goal_array == confirm_array[i])[0][0] # 指定したマスのindex
-        confirm_array_index2 = np.append(confirm_array_index2, index)
+        index = now_array.index(confirm_array[i])
+        start_array[index] = confirm_array[i] # 指定したマスを元の値に戻す
 
     # ゴール盤面
-    print('a: ', goal_array)
-    zero = np.where(start_array == 0)[0][0]
-    print('a2: ', zero)
-    index = np.where(goal_array == goal_number)[0][0] # 指定したマスのindex
+    next_start_index = np.where(goal_array == select)[0][0] # 指定したマスのindex
+    next_goal_index = np.where(goal_array == goal_number)[0][0] # 指定したマスのindex
     goal_array = np.full(width * height, free_number) # マスをfree_numberで埋める
-    goal_array[index] = goal_number  # 指定したマスを元の値に戻す
-    
-    # print(start_array, goal_array)
-    
-    print(goal_array)
+    goal_array[next_start_index] = select # 指定したマスを元の値に戻す
+    goal_array[next_goal_index] = goal_number # 指定したマスを元の値に戻す
+
+    # 固定するマス
     for i in range(len(confirm_array)):
-        index3 = confirm_array_index[i]
-        goal_array[index3] = confirm_array[i]
-    print(goal_array)
+        index = goal_board.index(confirm_array[i])
+        goal_array[index] = confirm_array[i] # 指定したマスを元の値に戻す
 
     # グローバル変数に代入
     start_board = start_array.tolist()
     goal_board = goal_array.tolist()
 
-    print(start_board, goal_board)
-
     # 探索
+    print(position, start_board, goal_board)
     solution = search()
 
+    # もとに戻す
     start_board = r_start_array.tolist()
     goal_board = r_goal_array.tolist()
     
-    # print(solution)
-    if pp:
-        array2 = []
-        for i in range(len(solution) - 1):
-            array2.append(solution[i + 1]['array'])
-
-    pp = False
     array = []
     for i in range(len(solution) - 1):
         array.append(solution[i + 1]['d'])
+        print(solution[i + 1]['array'], solution[i + 1]['d']) #デバッグ
 
     return array
 
@@ -495,10 +486,8 @@ def move(now_array, goal_number, confirm_array):
 def move_board(board_array, position, root):
     now_array = np.array(board_array)
     position = np.where(now_array == position)[0][0]
-    # print('start: ', now_array)
 
     for direction in root:
-        # print(direction)
         x, y = XY_coord(position) # XY座標に変換
 
         # up
@@ -518,11 +507,9 @@ def move_board(board_array, position, root):
             index = XY_index(x - 1, y) if x - 1 >= 0 else XY_index(width - 1, y)
 
         now_array[position], now_array[index] = now_array[index], now_array[position] # マスを交換
-        # print('',now_array)
         position = index # 新しい位置を指定
-        # print(now_array, direction)
+        print(now_array, direction) # デバッグ
 
-    # print('goal: ', now_array)
     return now_array
 
 
@@ -570,17 +557,17 @@ def main():
     # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
 
     board = start_board
-    root = move(board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    board = move_board(start_board, position, root)
-    print('board: ',root, board)
+    # root = move(board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    # board = move_board(start_board, position, root)
+    # print('board: ',root, board)
 
-    root = move(board, 1, [0]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    root = move(board, 1, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     board = move_board(board, position, root)
     print('board: ',root, board)
 
-    root = move(board, 2, [0,1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    board = move_board(board, position, root)
-    print('board: ',root, board)
+    # root = move(board, 2, [1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    # board = move_board(board, position, root)
+    # print('board: ',root, board)
 
     # root = move(board, 3, [0,1,2]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
