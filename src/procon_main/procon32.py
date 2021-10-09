@@ -6,10 +6,10 @@ import click
 import requests
 
 # 練習用
-URL = "https://procon32-practice.kosen.work"
+# URL = "https://procon32-practice.kosen.work"
 
 # 本番用
-# URL = "https://procon32-akita.kosen.work"
+URL = "https://procon32-akita.kosen.work"
 
 # 本番用（予備）
 # URL = "https://procon32-sub.kosen.work"
