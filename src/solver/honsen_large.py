@@ -7,6 +7,9 @@ from random import shuffle
 import numpy as np
 import random
 import time
+import atexit
+
+from numpy.lib.shape_base import apply_along_axis
 
 # グローバル変数
 OPEN = 0
@@ -103,30 +106,29 @@ def search():
                         sol2 = get_solution(visited_board)
                         sol2 = reverse_direction(sol2)
                         sol1.reverse()
-                        # sol1.append(get_middle_direction(sol1[-1], sol2[0])) ここ修正必要
-                        # add_last_direction(sol1[-1], sol2[0], sol1)
-                        # print('xxx',sol1)
-                        # index = sol1[-1]['array'].index(position)
-                        # x, y = XY_coord(index)
-                        # array1 = coord_next(x, y)
-                        # di = get_middle_direction(sol1[-1], sol2[0])
-                        # print(sol1[-1], sol2[0])
-
-                        # for i in array1:
-                        #     if i[2] == di:
-                        #         next_index = XY_index(i[0], i[1])
                     else:
+                        # print('bbb')
                         sol1 = get_solution(visited_board)
                         sol1.reverse()
                         sol2 = get_solution(now_board)
                         sol2 = reverse_direction(sol2)
-                        # sol1.append(get_middle_direction(sol1[-1], sol2[0]))
+
+                    sol2_len = len(sol2)
+
+                    for i in range(sol2_len):
+
+                        sol2[sol2_len - i - 1]['d'] = sol2[sol2_len - i - 2]['d']
                         
-                    # for item in sol1:
-                    #     print(item)
-                    # print('============')
-                    # for item in sol2:
-                    #         print(item)
+                        if i == sol2_len - 1:
+                            di = get_middle_direction(sol1[-1], sol2[0])
+                            sol2[sol2_len - i - 1]['d'] = di
+                    
+                    # デバッグ
+                    for item in sol1:
+                        print(item)
+                    print('============')
+                    for item in sol2:
+                            print(item)
 
                     sol = sol1 + sol2
 
@@ -134,17 +136,6 @@ def search():
                     
                     get_first_direction(sol[0], sol[1]) # 盤面最後の移動方向を追加
                     get_last_direction(sol[-2], sol[-1]) # 盤面最後の移動方向を追加
-
-                    # a = 0
-                    # for i in range(len(sol) - 1):
-                    #     if (sol[i]['d'] == 'D'):
-                            
-                    #         if (sol[i - 1]['d'] != 'D'):
-                    #             if (sol[i + 1]['d'] == 'D'):
-                    #                 a = 1
-                    #                 # print('sol', sol[i])
-                    #                 sol.insert(i, {'array': [], 'd': 'D'})
-                    # if a == 1: sol.pop(-1)
 
                     return sol
 
@@ -574,8 +565,8 @@ def main():
 
     all_result = []
 
-    # HEURISTIC_MAGNIFICATION = 0.79
-    HEURISTIC_MAGNIFICATION = 10000
+    HEURISTIC_MAGNIFICATION = 10000 # めっちゃ適当
+    HEURISTIC_MAGNIFICATION = 0.79 # 最適解に近い
 
     goal_board = get_goal_array()
     start_board = get_start_array()
@@ -584,7 +575,7 @@ def main():
     position = 0 # 本番用
 
     # デバッグ用
-    # global width, height, position
+    # global width, height
 
     # width = 3
     # height = 3
@@ -606,11 +597,21 @@ def main():
     ok_array = []
     board = start_board
     for i in range(len(start_board) - 1):
-        root = move(board, i + 1, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+        now_ok = goal_board[0:width][i]
+        root = move(board, now_ok, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
         board = move_board(board, position, root)
-        ok_array.append(i + 1)
-        # print('board: ',root, board)
-        # print(all_result)
+        ok_array.append(now_ok)
+
+        if len(ok_array) == width:
+            print('HELLO')
+            changeBoard(board)
+            break
+        # print('board: ',root, board) # デバッグ
+        # print(now_ok)
+
+    # デバッグ(ルート確認)
+    # board = move_board(start_board, position, all_result)
+    # print('board: ', board)
     
     # デバッグ用
     # for i in range(width * height):
@@ -622,9 +623,10 @@ def main():
     #         position += 1
     #         continue
         
-    # root = move(board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    # root = move(board, 1, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(start_board, position, root)
     # print('board: ',root, board)
+    # print('index: ',root, XY_coord(np.where(board == 1)[0][0]))
 
     # root = move(board, 1, [0,2]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
@@ -678,6 +680,15 @@ def main():
 
     output_answer(all_result) # 解を出力
 
+
+def changeBoard(board_array):
+    global height
+    new_board = board_array[width:]
+    height -= 1
+    print('board: ',width, height)
+    root = move(new_board, goal_board[width:width * 2][0], []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    board = move_board(new_board, position, root)
+    print('board: ',root, board)
 
 # ゴール配列を取得
 def output_answer(solution):
@@ -736,7 +747,15 @@ def can_solve():
     # print('can_solve: ', counts) # ログ出力
     return counts % 2 == 0
 
+# 終了時
+def cleanup():
+    print(all_result)
+    output_answer(all_result) # 解を出力
+
 
 # 実行
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    finally:
+        atexit.register(cleanup)
