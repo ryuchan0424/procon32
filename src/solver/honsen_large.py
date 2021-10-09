@@ -124,11 +124,11 @@ def search():
                             sol2[sol2_len - i - 1]['d'] = di
                     
                     # デバッグ
-                    for item in sol1:
-                        print(item)
-                    print('============')
-                    for item in sol2:
-                            print(item)
+                    # for item in sol1:
+                    #     print(item)
+                    # print('============')
+                    # for item in sol2:
+                    #         print(item)
 
                     sol = sol1 + sol2
 
@@ -575,12 +575,12 @@ def main():
     position = 0 # 本番用
 
     # デバッグ用
-    # global width, height
+    global width, height
 
-    # width = 3
-    # height = 3
-    # goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
-    # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    width = 3
+    height = 3
+    goal_board = [8, 6, 7, 2, 5, 4, 3, 0, 1]
+    start_board = [1, 2, 3, 4, 5, 6, 7, 8, 0]
 
     # width = 4
     # height = 4
@@ -597,19 +597,27 @@ def main():
     global board, ok_array, now_ok_array, now
     ok_array = []
     board = start_board
-    now_ok_array = goal_board[0:width]
+    now_ok_array = goal_board
+    # now_ok_array = goal_board[0:width]
     now = 0
     for i in range(len(start_board) - 1):
         now_ok = now_ok_array[now]
-        print('HELLO', board, now_ok, ok_array)
         root = move(board, now_ok, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
         board = move_board(board, position, root)
         ok_array.append(now_ok)
         now += 1
+    # for i in range(len(start_board) - 1):
+    #     now_ok = now_ok_array[now]
+    #     root = move(board, now_ok, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    #     board = move_board(board, position, root)
+    #     ok_array.append(now_ok)
+    #     now += 1
+        # print('HELLO2', len(ok_array), ok_array)
+        
 
-        if len(ok_array) == width:
-            print('HELLO')
-            changeBoard(board, (i // width) + 1) 
+        # if len(ok_array) == width:
+        #     changeBoard((i // width) + 1) 
+            # print('HELLO1', now, now_ok_array)
             # break
         # print('board: ',root, board) # デバッグ
         # print(now_ok)
@@ -686,18 +694,31 @@ def main():
     output_answer(all_result) # 解を出力
 
 
-def changeBoard(board_array, i):
+def changeBoard(i):
     global board, ok_array, now_ok_array, now
     global height
 
-    new_board = board_array[width:]
+    # print('aaa: ', len(board), board)
+    print('test1', board)
+    board = board[width:]
+    print('test2', board)
+
+    # print('bbb: ', len(board), board)
     height -= 1
-    board = new_board
+    # board = new_board
     ok_array = []
     now = 0
+    
     now_ok_array = goal_board[width * i:width + width * i]
+    print('test', i, now_ok_array)
 
-    print('changeBoard', i, goal_board, now_ok_array)
+    # print('changeBoard', i, board, now_ok_array)
+
+    # root = move(board, 6, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    # board = move_board(start_board, position, root)
+    # print('board: ',root, board)
+    # print('index: ',root, XY_coord(np.where(board == 1)[0][0]))
+    # [23, 35, 1, 59, 29, 11, 61, 6]
 
 # ゴール配列を取得
 def output_answer(solution):
