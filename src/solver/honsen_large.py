@@ -437,6 +437,7 @@ def move(now_array, goal_number, confirm_array):
 
     # 現在の盤面
     index = np.where(start_array == goal_number)[0][0] # 指定したマスのindex
+    print('a1: ', index)
     start_array = np.full(width * height, free_number) # マスをfree_numberで埋める
     start_array[index] = goal_number # 指定したマスを元の値に戻す
 
@@ -449,20 +450,26 @@ def move(now_array, goal_number, confirm_array):
         confirm_array_index2 = np.append(confirm_array_index2, index)
 
     # ゴール盤面
+    print('a: ', goal_array)
+    zero = np.where(start_array == 0)[0][0]
+    print('a2: ', zero)
     index = np.where(goal_array == goal_number)[0][0] # 指定したマスのindex
     goal_array = np.full(width * height, free_number) # マスをfree_numberで埋める
     goal_array[index] = goal_number  # 指定したマスを元の値に戻す
-    position = goal_number
-
+    
+    # print(start_array, goal_array)
+    
+    print(goal_array)
     for i in range(len(confirm_array)):
         index3 = confirm_array_index[i]
         goal_array[index3] = confirm_array[i]
+    print(goal_array)
 
     # グローバル変数に代入
     start_board = start_array.tolist()
     goal_board = goal_array.tolist()
 
-    # print(start_board, goal_board)
+    print(start_board, goal_board)
 
     # 探索
     solution = search()
@@ -562,17 +569,18 @@ def main():
     # start_board =  [1, 2, 3, 8, 5, 6, 7, 12, 9, 10, 11, 0, 13, 14, 15, 4] # ボードの初期盤面 up x3 (4選択時)
     # start_board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0] # ボードのゴール盤面
 
-    # root = move(start_board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    # board = move_board(start_board, position, root)
-    # print('board: ',root, board)
+    board = start_board
+    root = move(board, 0, []) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    board = move_board(start_board, position, root)
+    print('board: ',root, board)
 
-    # root = move(board, 1, [0]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    # board = move_board(board, position, root)
-    # print('board: ',root, board)
+    root = move(board, 1, [0]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    board = move_board(board, position, root)
+    print('board: ',root, board)
 
-    # root = move(board, 2, [0,1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
-    # board = move_board(board, position, root)
-    # print('board: ',root, board)
+    root = move(board, 2, [0,1]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
+    board = move_board(board, position, root)
+    print('board: ',root, board)
 
     # root = move(board, 3, [0,1,2]) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
     # board = move_board(board, position, root)
