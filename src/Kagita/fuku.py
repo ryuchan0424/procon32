@@ -13,12 +13,21 @@ sy=0
 kaitensuu=0
 kaizou=2
 bairitu=1
+kan=150##計算のがんばり具合（大きいと遅くなるが、ちゃんと計算してくれる）
 ########################################################################################
+if 2==len(args):
+ kan=int(args[1])
 
-if 4<=len(args):
+if 4==len(args):
  sx=int(args[1])
  sy=int(args[2])
  kaitensuu=int(args[3])
+
+if 5==len(args):
+ sx=int(args[1])
+ sy=int(args[2])
+ kaitensuu=int(args[3])
+ kan=int(args[4])
 
 #img = cv2.imread('fuck image3.png', cv2.IMREAD_COLOR)
 img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
@@ -63,7 +72,6 @@ def rot(d,r):#多分左回転
   c1=c1-4
  return c1
 def get_fragment(q1,u,v,ran):#そのピースの指定した方向にran番会いそうなピースを返す
- kan=150##計算のがんばり具合（大きいと遅くなるが、ちゃんと計算してくれる）
  distan=5
  sabo=1
  atu=2
