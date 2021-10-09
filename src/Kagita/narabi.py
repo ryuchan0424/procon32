@@ -46,6 +46,13 @@ def toku(index,cansame,text):
    if index[r[i*2][0],r[i*2][1]]==0:
     ox=r[i*2][0]
     oy=r[i*2][1]
+    
+    for i in range(3):
+     memo=""
+     for j in range(3):
+      memo=memo+str(index[j,i])+","
+     print(memo)
+    print(ox,oy)
     i=i+1
     if i>=4:
      i=i-4
@@ -60,6 +67,9 @@ def toku(index,cansame,text):
   
   for i in range(4):
    if index[r[i*2+1][0],r[i*2+1][1]]==0:
+    ox=r[i*2+1][0]
+    oy=r[i*2+1][1]
+    
     i=i+2
     if i>=4:
      i=i-4
@@ -150,10 +160,8 @@ def toku(index,cansame,text):
      ox,oy,index,text=narabi(ox,oy,n,index,text)
     break
   if h>=2:
-   print(g)
-   print(buf)
    cansame[g]=False
-
+ '''
  for i in range(3):
   memo=""
   for j in range(3):
@@ -165,6 +173,7 @@ def toku(index,cansame,text):
  print(oy)
  
  print(text)
+ '''
  return index,text
 
 filet=open('problem.txt', 'r',encoding='utf-8').read()
@@ -218,20 +227,32 @@ for t2 in range(1):
    elif ox<terx:
     w1=1
    x_3_3=ox+w1
+   if x_3_3<=0:
+    x_3_3=1
+    break
+   if x_3_3>=index.shape[0]-2:
+    x_3_3=index.shape[0]-2
+    break
    w2=0
    if oy>tery:
     w2=-1
    elif ox<terx:
     w2=1
    y_3_3=oy+w2
+   if y_3_3<=0:
+    y_3_3=1
+    break
+   if y_3_3>=index.shape[1]-2:
+    y_3_3=index.shape[1]-2
+    break
    ide=np.array([[3,4,5],[2,0,6],[1,8,7]])
    memo=ide[1,1]
    ide[1,1]=ide[1+w1,1+w2]
    ide[1+w1,1+w2]=memo
    can=[False,True,True,True,True,True,True,True,True]
    ide,text=toku(ide,can,text)
-
-
+   
+   
    for j1 in range(3):
     for j2 in range(3):
      memo=index[x_3_3+j1-1,y_3_3+j2-1].copy()
@@ -239,27 +260,26 @@ for t2 in range(1):
      index[x_3_3+tas[ide[j1,j2]][0]-1,y_3_3+tas[ide[j1,j2]][1]-1]=memo.copy()
    ox=x_3_3
    oy=y_3_3
+    
+   for i2 in range(index.shape[1]):
+    memo=""
+    for i1 in range(index.shape[0]):
+     memo=memo+str(index[i1,i2,0])+","+str(index[i1,i2,1])+" "
+    print(memo)
+   print()
   
   print("a")
   print(x_3_3,y_3_3)
   while not(t1==terx and t2==tery):
-   u1=0 #o
-   w1=0 #ter
    if (t1-terx)*(t1-terx)>(t1-ox)*(t1-ox):
     x_3_3=ox
-    w1=terx-ox
    else:
     x_3_3=terx
-    u1=ox-terx
       
-   u2=0 #o
-   w2=0 #ter
    if (t2-tery)*(t2-tery)>(t2-oy)*(t2-oy):
     y_3_3=oy
-    w2=tery-oy
    else:
     y_3_3=tery
-    u2=oy-tery
    
    
    ide=np.array([[3,4,5],[2,0,6],[1,8,7]])
@@ -274,7 +294,10 @@ for t2 in range(1):
    elif y_3_3<t2:
     m2=1
    nun=ide[m1+1,m2+1]
-
+   for j1 in range(3):
+    for j2 in range(3):
+     
+   
    memo=ide[1,1]
    ide[1,1]=ide[1+w1,1+w2]
    ide[1+w1,1+w2]=memo
@@ -283,6 +306,7 @@ for t2 in range(1):
     ide[1,1]=ide[1+u1,1+u2]
     ide[1+u1,1+u2]=memo
    else:
+    print(u1,u2,ox,oy,terx,tery)
     memo=ide[1+m1,1+m2]
     ide[1+m1,1+m2]=ide[1+u1,1+u2]
     ide[1+u1,1+u2]=memo
@@ -298,6 +322,13 @@ for t2 in range(1):
      index[x_3_3+tas[ide[j1,j2]][0]-1,y_3_3+tas[ide[j1,j2]][1]-1]=memo.copy()
    ox=x_3_3
    oy=y_3_3
+   
+   for i2 in range(index.shape[1]):
+    memo=""
+    for i1 in range(index.shape[0]):
+     memo=memo+str(index[i1,i2,0])+","+str(index[i1,i2,1])+" "
+    print(memo)
+   print()
 '''
 '''
 for i2 in range(index.shape[1]):
@@ -312,9 +343,3 @@ index=np.array([[1,2,3],[4,5,6],[0,7,8]])
 can=[False,False,True,False,False,False,False,True,True]
 index,text=toku(index,can,text)
 '''
-
-
-
-
-print(text)
-print(len(text))
