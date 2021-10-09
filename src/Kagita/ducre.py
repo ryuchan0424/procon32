@@ -43,8 +43,6 @@ for i2 in range(len(y_wari)):
 text=text+"\n1\n00\n2\nDU\n"
 print(text)
 
-
-
-
-
-
+savefile=open('solution.txt', 'w', encoding='UTF-8')
+savefile.write(text)
+savefile.close()
