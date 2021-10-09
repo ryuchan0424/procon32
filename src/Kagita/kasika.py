@@ -11,9 +11,9 @@ def rot(d,r):#回転計算関数
   c1=c1-4
  return c1
 
-img = cv2.imread('problem.ppm', cv2.IMREAD_COLOR)
+img = cv2.imread('./procon_main/problem.ppm', cv2.IMREAD_COLOR)
 
-file=open('problem.ppm', 'rb')
+file=open('./procon_main/problem.ppm', 'rb')
 memo=file.read()[0:32].decode(encoding='utf-8').split("\n")[1].split(" ")
 print(memo)
 file.close()
