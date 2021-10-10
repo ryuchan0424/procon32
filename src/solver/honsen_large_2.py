@@ -575,7 +575,7 @@ def main():
     position = 0 # 本番用
 
     # デバッグ用
-    global width, height
+    # global width, height
 
     # width = 3
     # height = 3
@@ -597,10 +597,10 @@ def main():
     global board, ok_array, now_ok_array, now
     ok_array = []
     board = start_board
-    now_ok_array = goal_board
+    now_ok_array = goal_board[0:width]
     now = 0
     for i in range(len(start_board) - 1):
-        now_ok = now_ok_array[i]
+        now_ok = now_ok_array[now]
         root = move(board, now_ok, ok_array) # 特定のピースをゴールの位置へ移動 (現在の盤面, 移動したい値)
         board = move_board(board, position, root)
         ok_array.append(now_ok)
@@ -608,18 +608,18 @@ def main():
         print('HELLO2', now, board)
         
 
-    #     if len(ok_array) == width:
+        if len(ok_array) == width:
             
-    #         if(changeBoard((i // width) + 1) == False):
-    #             break
+            if(changeBoard((i // width) + 1) == False):
+                break
             # print('HELLO1', now, now_ok_array)
             # break
         # print('board: ',root, board) # デバッグ
         # print(now_ok)
 
     # デバッグ(ルート確認)
-    # board = move_board(start_board, position, ['R', 'R', 'D', 'L', 'U', 'L', 'L', 'R', 'U', 'L', 'D', 'R', 'D', 'L', 'U', 'R', 'D', 'R', 'U', 'R', 'D', 'L', 'L', 'L', 'U', 'D', 'D', 'D', 'D', 'D', 'D'])
-    # print('board: ', board)
+    board = move_board(start_board, position, ['R', 'R', 'D', 'L', 'U', 'L', 'L', 'R', 'U', 'L', 'D', 'R', 'D', 'L', 'U', 'R', 'D', 'R', 'U', 'R', 'D', 'L', 'L', 'L', 'U', 'D', 'D', 'D', 'D', 'D', 'D'])
+    print('board: ', board)
     
     # デバッグ用
     # for i in range(width * height):
